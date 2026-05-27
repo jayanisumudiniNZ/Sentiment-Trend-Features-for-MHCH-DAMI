@@ -1,8 +1,138 @@
-# Sentiment-Trend-Features-for-MHCH-DAMI
-This project investigates how sentiment-trend features can improve Machine-Human Chatting Handoff (MHCH) in hybrid customer-service systems. The work builds on the Difficulty-Assisted Matching Inference (DAMI) model, originally proposed for predicting when a chatbot conversation should be transferred to a human agent. While DAMI already uses linguistic difficulty indicators and a single current-utterance sentiment score, this project explores whether the direction and speed of sentiment change across recent user turns can provide additional early-warning signals for handoff decisions.
+# MCIS Research — Machine-Human Chatting Handoff
 
-The proposed extension adds five lightweight sentiment-based features to DAMI’s utterance-level representation: current polarity, three multi-window polarity slopes, and short-horizon sentiment volatility. These features are designed to capture whether a customer’s mood is gradually deteriorating, even when no single message is strongly negative. The goal is not to redesign DAMI’s architecture, but to test whether simple, reproducible sentiment dynamics can improve early transfer prediction while keeping the original model structure, loss function, and label set unchanged.
+This workspace contains the **MHCH (Machine-Human Chatting Handoff)** stack: the published DAMI baseline and a linked Path A extension for sentiment-trend features.
 
-The study uses the public Clothing and Makeup MHCH datasets released with the original DAMI research. The planned evaluation follows the “Time to Transfer” framework, using F1, Macro-F1, AUC, and Golden Transfer within Tolerance (GT-I, GT-II, and GT-III). Particular attention is given to GT-II and GT-III because these metrics reward timely or slightly early handoff decisions, which are important in real customer-service environments.
+---
 
-This repository is intended to support a reproducible research workflow, including feature extraction, DAMI input integration, ablation experiments, cross-domain testing, and result analysis. The broader aim is to show whether sentiment trajectories can help chatbots identify deteriorating conversations earlier and support smoother collaboration between automated systems and human agents.
+## Projects
+
+
+| Directory                                                   | Branch / role              | Purpose                                                                                                |
+| ----------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **[MHCH-DAMI](MHCH-DAMI/)**                                 | `main`                     | Official TensorFlow DAMI implementation (AAAI 2021). **Keep minimal changes.**                         |
+| **[MHCH-DAMI-sentiment-trend](MHCH-DAMI-sentiment-trend/)** | `main` or feature branches | Path A: polarity, slope, volatility features + ablations. **Links to MHCH-DAMI** via `MHCH_DAMI_ROOT`. |
+| **[MHCH-DAMI-bert](MHCH-DAMI-bert/)**                       | standalone                 | BERT-based handover model — standalone & with flag features. Independent PyTorch implementation.       |
+
+
+### Documentation
+
+
+| File                                                                         | Content                               |
+| ---------------------------------------------------------------------------- | ------------------------------------- |
+| `[path-a-sentiment-trend-guide.md](path-a-sentiment-trend-guide.md)`         | Full Path A research guide (Days 7–9) |
+| `[MHCH-DAMI/README.md](MHCH-DAMI/README.md)`                                 | Upstream DAMI usage                   |
+| `[MHCH-DAMI-sentiment-trend/README.md](MHCH-DAMI-sentiment-trend/README.md)` | Extension setup, flags, train/eval    |
+| `[MHCH-DAMI-sentiment-trend/LINK.md](MHCH-DAMI-sentiment-trend/LINK.md)`     | How the two repos connect             |
+
+
+---
+
+## Quick workflow
+
+### 1. Baseline DAMI (upstream only)
+
+```bash
+cd MHCH-DAMI
+conda activate mhch-dami
+python main.py --phase train --model_name dami --data_name clothing \
+  --memory 0 --suffix .128 --mode train --ways dami
+```
+
+### 2. Path A (extension)
+
+```bash
+export MHCH_DAMI_ROOT=$PWD/MHCH-DAMI
+cd MHCH-DAMI-sentiment-trend
+pip install -r requirements.txt
+
+# Build trend features (one-time, writes 9th field to shared pickles)
+python -m path_a.scripts.build_trend_features --data_name clothing
+```
+
+### 3. Ablation training & evaluation
+
+
+| Variant           | Train command                                                                               | Eval command                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Full trend bundle | `python train.py --data_name clothing --trend_features full --suffix .128.trend`            | `python evaluate.py --data_name clothing --trend_features full --suffix .128.trend --split test`            |
+| **Polarity only** | `python train.py --data_name clothing --trend_features pol_only --suffix .128.pol`          | `python evaluate.py --data_name clothing --trend_features pol_only --suffix .128.pol --split test`          |
+| Slope-3 only      | `python train.py --data_name clothing --trend_features slope3_only --suffix .128.slope3`    | `python evaluate.py --data_name clothing --trend_features slope3_only --suffix .128.slope3 --split test`    |
+| Slope-5 only      | `python train.py --data_name clothing --trend_features slope5_only --suffix .128.slope5`    | `python evaluate.py --data_name clothing --trend_features slope5_only --suffix .128.slope5 --split test`    |
+| Slope-7 only      | `python train.py --data_name clothing --trend_features slope7_only --suffix .128.slope7`    | `python evaluate.py --data_name clothing --trend_features slope7_only --suffix .128.slope7 --split test`    |
+| Volatility-5 only | `python train.py --data_name clothing --trend_features volatility5_only --suffix .128.vol5` | `python evaluate.py --data_name clothing --trend_features volatility5_only --suffix .128.vol5 --split test` |
+
+
+Batch ablation report:
+
+```bash
+python run_path_a_ablation.py --data_name clothing --split test
+```
+
+---
+
+## Repository layout
+
+```
+Project/
+├── README.md                          ← this file
+├── path-a-sentiment-trend-guide.md
+├── MHCH-DAMI/                         ← upstream baseline
+│   ├── main.py
+│   ├── data/
+│   └── networks/DAMI.py
+├── MHCH-DAMI-sentiment-trend/         ← Path A extension
+│   ├── path_a/
+│   ├── train.py
+│   ├── evaluate.py
+│   ├── weights/
+│   └── results/
+└── MHCH-DAMI-bert/                    ← BERT models (standalone)
+    ├── models/
+    │   ├── bert_handover.py           ← BERT-only classifier
+    │   └── bert_handover_with_flags.py ← BERT + trend flag features
+    ├── utils/
+    ├── train.py
+    ├── evaluate.py
+    ├── run_ablation.py
+    ├── weights/
+    └── results/
+```
+
+**Data** live under `MHCH-DAMI/data/` and are shared. Path A adds an optional 9th pickle field `trend_list`; upstream loaders ignore extra fields if only 8 are read.
+
+**Weights:** baseline checkpoints under `MHCH-DAMI/weights/`; Path A under `MHCH-DAMI-sentiment-trend/weights/`.
+
+**Results:** evaluation outputs under `MHCH-DAMI-sentiment-trend/results/path_a/<dataset>/<variant>/<split>/`.
+
+---
+
+## Ablation progress
+
+
+| Variant          | Dataset  | Status   | F1    | GT-I  | GT-II | GT-III |
+| ---------------- | -------- | -------- | ----- | ----- | ----- | ------ |
+| Baseline (DAMI)  | clothing | done     | 67.02 | 68.32 | 75.74 | 79.65  |
+| pol_only         | clothing | **next** | —     | —     | —     | —      |
+| full             | clothing | pending  | —     | —     | —     | —      |
+| slope3_only      | clothing | pending  | —     | —     | —     | —      |
+| slope5_only      | clothing | pending  | —     | —     | —     | —      |
+| slope7_only      | clothing | pending  | —     | —     | —     | —      |
+| volatility5_only | clothing | pending  | —     | —     | —     | —      |
+
+
+---
+
+## Git branches (MHCH-DAMI)
+
+- `**main`** — Match [WeijiaLau/MHCH-DAMI](https://github.com/WeijiaLau/MHCH-DAMI); use for paper reproduction.
+- `**Sentiment-Trend-Features**` — Historical branch; new work should use `**MHCH-DAMI-sentiment-trend**` instead of modifying upstream.
+
+Initialize the extension as its own git repo if you publish it separately:
+
+```bash
+cd MHCH-DAMI-sentiment-trend
+git init
+git add .
+git commit -m "Path A sentiment-trend extension linked to MHCH-DAMI"
+```
+

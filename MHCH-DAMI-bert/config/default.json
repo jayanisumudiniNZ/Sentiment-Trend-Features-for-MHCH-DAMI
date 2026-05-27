@@ -1,0 +1,17 @@
+{
+  "bert_model_name": "bert-base-chinese",
+  "max_seq_len": 128,
+  "max_dialogue_len": 30,
+  "batch_size": 16,
+  "epochs": 10,
+  "learning_rate": 2e-5,
+  "warmup_ratio": 0.1,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "nb_classes": 2,
+  "trend_feature_dim": 5,
+  "flag_hidden_dim": 32,
+  "save_best": true,
+  "early_stopping_patience": 3,
+  "gradient_accumulation_steps": 1
+}

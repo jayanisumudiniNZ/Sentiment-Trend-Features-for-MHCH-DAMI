@@ -1,0 +1,11 @@
+tensorflow>=2.12,<2.18
+tf-keras>=2.12
+tqdm
+jieba
+snownlp
+gensim>=4.0
+matplotlib>=3.5
+seaborn>=0.11
+scikit-learn>=1.0
+pandas>=1.3
+numpy

@@ -1,0 +1,13 @@
+              precision    recall  f1-score   support
+
+      Normal     0.9218    0.9288    0.9253      2740
+Transferable     0.6929    0.6707    0.6816       656
+
+    accuracy                         0.8790      3396
+   macro avg     0.8073    0.7998    0.8035      3396
+weighted avg     0.8776    0.8790    0.8782      3396
+
+
+Confusion matrix:
+[[2545  195]
+ [ 216  440]]
