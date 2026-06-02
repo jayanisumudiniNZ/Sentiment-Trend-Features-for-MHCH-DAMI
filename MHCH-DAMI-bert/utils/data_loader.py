@@ -30,6 +30,7 @@ TREND_MODE_INDICES = {
     'slope7_only': [3],
     'volatility5_only': [4],
     'full': [0, 2, 4],  # pol_t + slope_5 + volatility_5
+    'full_slope3': [0, 1, 4],  # pol_t + slope_3 + volatility_5
 }
 
 

@@ -40,6 +40,9 @@ python train.py --data_name makeup --model_type bert_only --suffix .bert
 # Full trend bundle (polarity + slope_5 + volatility_5)
 python train.py --data_name clothing --model_type bert_flags --trend_features full --suffix .bert.full
 
+# Full trend bundle (polarity + slope_3 + volatility_5)
+python train.py --data_name clothing --model_type bert_flags --trend_features full_slope3 --suffix .bert.full.s3
+
 # Polarity only
 python train.py --data_name clothing --model_type bert_flags --trend_features pol_only --suffix .bert.pol
 
@@ -89,6 +92,7 @@ These features are computed from customer utterance sentiment history:
 | `slope7_only` | slope_7 | 1 |
 | `volatility5_only` | volatility_5 | 1 |
 | `full` | pol_t + slope_5 + volatility_5 | 3 |
+| `full_slope3` | pol_t + slope_3 + volatility_5 | 3 |
 
 ## Output Structure
 

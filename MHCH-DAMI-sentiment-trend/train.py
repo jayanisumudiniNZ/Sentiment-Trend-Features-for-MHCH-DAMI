@@ -45,7 +45,7 @@ def main():
     parser.add_argument('--mode', default='train')
     parser.add_argument('--ways', default='dami')
     parser.add_argument('--trend_features', default='full',
-                        help='baseline|full|pol_only|slope3_only|slope5_only|slope7_only|volatility5_only')
+                        help='baseline|full|full_slope3|pol_only|slope3_only|slope5_only|slope7_only|volatility5_only')
     args = parser.parse_args()
 
     log_dir = args.log_path or get_logs_dir()

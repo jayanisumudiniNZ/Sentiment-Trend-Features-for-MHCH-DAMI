@@ -22,6 +22,9 @@ MODE_ALIASES = {
     'slope_7_only': 'slope7_only',
     'trend_full': 'full',
     'bundle': 'full',
+    'full_s3': 'full_slope3',
+    'bundle_slope3': 'full_slope3',
+    'trend_full_slope3': 'full_slope3',
 }
 
 # Each mode -> feature names taken from trend_list (baseline uses senti_list instead)
@@ -35,6 +38,8 @@ MODE_FEATURE_NAMES = {
     'volatility5_only': ('volatility_5',),
     # Full Path A bundle: polarity + 5-turn slope + volatility (not slope_3/7)
     'full': ('pol_t', 'slope_5', 'volatility_5'),
+    # Alternate bundle: polarity + 3-turn slope + volatility (GT-II/III often better than slope_5)
+    'full_slope3': ('pol_t', 'slope_3', 'volatility_5'),
 }
 
 TREND_MODES = tuple(MODE_FEATURE_NAMES.keys())
@@ -48,6 +53,7 @@ DEFAULT_SUFFIX_BY_MODE = {
     'slope7_only': '.128.slope7',
     'volatility5_only': '.128.vol5',
     'full': '.128.trend',
+    'full_slope3': '.128.trend.s3',
 }
 
 

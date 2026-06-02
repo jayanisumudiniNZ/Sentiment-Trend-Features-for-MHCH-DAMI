@@ -16,6 +16,7 @@ from path_a.core.trend_features import DEFAULT_SUFFIX_BY_MODE, list_trend_modes
 PATH_A_VARIANTS = [
     ('baseline', DEFAULT_SUFFIX_BY_MODE['baseline']),
     ('full', DEFAULT_SUFFIX_BY_MODE['full']),
+    ('full_slope3', DEFAULT_SUFFIX_BY_MODE['full_slope3']),
     ('pol_only', DEFAULT_SUFFIX_BY_MODE['pol_only']),
     ('slope3_only', DEFAULT_SUFFIX_BY_MODE['slope3_only']),
     ('slope5_only', DEFAULT_SUFFIX_BY_MODE['slope5_only']),

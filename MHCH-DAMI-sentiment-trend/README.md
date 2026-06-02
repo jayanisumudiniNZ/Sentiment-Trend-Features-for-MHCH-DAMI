@@ -99,6 +99,7 @@ python run_path_a_ablation.py --list_modes
 | ------------------ | ----------------- | ------------------------------------ | -------------- | ------------- |
 | `baseline`         | DAMI (paper)      | `senti_list`                         | 1              | `.128`        |
 | `full`             | DAMI + **bundle** | `pol_t` + `slope_5` + `volatility_5` | 3              | `.128.trend`  |
+| `full_slope3`      | DAMI + **bundle** | `pol_t` + `slope_3` + `volatility_5` | 3              | `.128.trend.s3` |
 | `pol_only`         | DAMI + polarity   | `pol_t`                              | 1              | `.128.pol`    |
 | `slope3_only`      | DAMI + slope      | `slope_3`                            | 1              | `.128.slope3` |
 | `slope5_only`      | DAMI + slope      | `slope_5`                            | 1              | `.128.slope5` |
@@ -113,8 +114,11 @@ Aliases: `volatility_5_only`, `bundle`, `trend_full`, etc. (see `path_a/core/tre
 ## Training
 
 ```bash
-# Full trend bundle
+# Full trend bundle (slope_5)
 python train.py --data_name clothing --trend_features full --suffix .128.trend --memory 0
+
+# Full trend bundle (slope_3) — alternate flag
+python train.py --data_name clothing --trend_features full_slope3 --suffix .128.trend.s3 --memory 0
 
 # Baseline (same weights naming as paper; uses upstream senti only)
 python train.py --data_name clothing --trend_features baseline --suffix .128 --memory 0

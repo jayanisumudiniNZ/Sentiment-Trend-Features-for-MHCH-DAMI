@@ -48,7 +48,7 @@ def parse_args():
     parser.add_argument('--data_name', default='clothing', choices=['clothing', 'makeup'])
     parser.add_argument('--model_type', default='bert_only', choices=['bert_only', 'bert_flags'])
     parser.add_argument('--trend_features', default='full',
-                        help='baseline|full|pol_only|slope3_only|slope5_only|slope7_only|volatility5_only')
+                        help='baseline|full|full_slope3|pol_only|slope3_only|slope5_only|slope7_only|volatility5_only')
     parser.add_argument('--suffix', default='.bert', help='Checkpoint suffix')
     parser.add_argument('--config', default=None, help='Path to config JSON')
     parser.add_argument('--bert_model', default='bert-base-chinese')

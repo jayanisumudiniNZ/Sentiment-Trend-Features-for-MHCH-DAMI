@@ -1,0 +1,10 @@
+Metric	Value
+Accuracy	86.07
+Precision	62.55
+Recall	69.51
+F1	65.85
+Macro-F1	78.63
+AUC	91.25
+GT-I	67.03
+GT-II	75.75
+GT-III	80.27

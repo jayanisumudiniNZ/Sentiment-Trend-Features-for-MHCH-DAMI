@@ -23,6 +23,7 @@ TREND_MODES = {
     'slope7_only': '.bert.slope7',
     'volatility5_only': '.bert.vol5',
     'full': '.bert.full',
+    'full_slope3': '.bert.full.s3',
 }
 
 
